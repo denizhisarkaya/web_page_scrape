@@ -4,9 +4,18 @@ from wordCounter import WordCounter
 from database import mongoDb
 import os
 from logs import log
+import time
+from datetime import datetime
+
+beginning_time = time.time()
 
 url_page = 'https://turkishnetworktimes.com/kategori/gundem/'
 max_pages = 1  # İlk iki sayfayı çekmek için
+
+success_count = 0
+unsuccess_count = 0
+
+now_time = datetime.now()
 
 wordCounter = WordCounter()
 log = log()
@@ -34,7 +43,7 @@ for page_num in range(1, max_pages + 1):
         
         wordCounter.add_article_words(article_text)
         
-        """ currentNew_data = {
+        currentNew_data = {
             "url": currentNew.url,
             "header": currentNew.header,
             "summary": currentNew.summary,
@@ -43,13 +52,29 @@ for page_num in range(1, max_pages + 1):
             "publish_date": currentNew.detail.publish_date,
             "update_date": currentNew.detail.update_date
         }
-        news_db.insert_news(currentNew_data) """
+        addedResult = news_db.insert_news(currentNew_data)
+        if (addedResult):
+            success_count += 1
+        else: 
+            unsuccess_count += 1
         
 topWords = wordCounter.get_top_words(10)
 word_frequency_documents = [
     {"word": word, "count": count} for word, count in topWords
 ]
-""" news_db.insert_word_frequency(word_frequency_documents) """
+news_db.insert_word_frequency(word_frequency_documents)
 
 figPath = os.path.join(os.getcwd(), 'mostCommonWords.png')
 wordCounter.savePlot(topWords, figPath)
+
+finish_time = time.time()
+pass_time = finish_time - beginning_time
+
+stats_data = {
+    "elapsed_time": pass_time,
+    "count": success_count + unsuccess_count,
+    "date": now_time.strftime("%Y-%m-%d %H:%M"),
+    "success_count": success_count,
+    "fail_count": unsuccess_count,
+}
+news_db.insert_stats(stats_data)

@@ -5,4 +5,4 @@ class log:
     def add(self, message):
         with open(self.file_name, 'a') as file:
             file.write(f"{message}\n")
-            print(f"Log '{message}' written to {self.file_name}")
+            #print(f"Log '{message}' written to {self.file_name}")
