@@ -11,7 +11,7 @@ from datetime import datetime
 beginning_time = time.time()
 
 url_page = 'https://turkishnetworktimes.com/kategori/gundem/'
-max_pages = 2  # istenilen sayfa sayısı çekmek için
+max_pages = 50  # istenilen sayfa sayısı çekmek için
 
 # başarılı/fail haber sayılarını burada tanımlandı.
 success_count = 0
