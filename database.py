@@ -7,34 +7,34 @@ log = log();
 class mongoDb:
     def __init__(self, connection_uri, database_name):
         try:
+            # MongoDB'ye bağlanır ve veritabanını seçer
             self.client = MongoClient(connection_uri)
             self.db = self.client[database_name]
             log.add('Veritabanı bağlantısı başarıyla kuruldu.')
         except:
             log.add('Veritabanı bağlantısı kurulamadı.')
         
-    """ 
-        ne yaptığı
-    """
+    # Koleksiyonları oluşturur
     def create_collections(self):
-         # News collection
+         # News collection, 'news' koleksiyonunu oluşturur veya varsa onu kullanır
         try:
             self.news_collection = self.db.create_collection('news')
         except CollectionInvalid:
             self.news_collection = self.db['news']
 
-        # Word frequency collection
+        # Word frequency collection, 'word_frequency' koleksiyonunu oluşturur veya varsa onu kullanır
         try:
             self.word_frequency_collection = self.db.create_collection('word_frequency')
         except CollectionInvalid:
             self.word_frequency_collection = self.db['word_frequency']
 
-        # Stats collection
+        # Stats collection, 'stats' koleksiyonunu oluşturur veya varsa onu kullanır
         try:
             self.stats_collection = self.db.create_collection('stats')
         except CollectionInvalid:
             self.stats_collection = self.db['stats']
 
+    # Haber verilerini koleksiyona ekler
     def insert_news(self, news_data):
         try:
             self.news_collection.insert_one(news_data)
@@ -44,7 +44,7 @@ class mongoDb:
             log.add('Veritabanına haberler eklenemedi.')
             return False
             
-
+    # Kelime frekans verilerini koleksiyona ekler
     def insert_word_frequency(self, word_frequency_data):
         try:
             self.word_frequency_collection.insert_many(word_frequency_data)
@@ -54,7 +54,7 @@ class mongoDb:
             log.add('En çok kullanılan kelimeler eklenemedi.')
             return False
         
-
+    # Ölçüm verilerini koleksiyona ekler
     def insert_stats(self, stats_data):
         try:
             self.stats_collection.insert_one(stats_data)
@@ -64,7 +64,7 @@ class mongoDb:
             log.add('Ölçüm değerleri eklenemedi.')
             return False
         
-        
+    # Güncelleme tarihine göre verileri gruplar ve ekrana yazdırır   
     def print_grouped_by_update_date(self):
         try:
             # MongoDB'den verileri gruplayarak alıyoruz

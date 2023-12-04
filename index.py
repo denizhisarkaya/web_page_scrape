@@ -7,11 +7,13 @@ from logs import log
 import time
 from datetime import datetime
 
+# kodun çalışmaya başladığı an
 beginning_time = time.time()
 
 url_page = 'https://turkishnetworktimes.com/kategori/gundem/'
-max_pages = 1  # İlk iki sayfayı çekmek için
+max_pages = 2  # istenilen sayfa sayısı çekmek için
 
+# başarılı/fail haber sayılarını burada tanımlandı.
 success_count = 0
 unsuccess_count = 0
 
@@ -40,9 +42,9 @@ for page_num in range(1, max_pages + 1):
         currentNew = newCreate(currentUrl, headers[index].text, summaries[index].text)
         article_text, article_images, publish_date, update_date = scraper.get_article_details(currentNew.url)
         currentNew.add_detail(article_text, article_images, publish_date, update_date)
-        
         wordCounter.add_article_words(article_text)
         
+        # Veritabanına eklenecek haber verileri
         currentNew_data = {
             "url": currentNew.url,
             "header": currentNew.header,
@@ -52,6 +54,8 @@ for page_num in range(1, max_pages + 1):
             "publish_date": currentNew.detail.publish_date,
             "update_date": currentNew.detail.update_date
         }
+        
+        # Haber verilerini veritabanına ekler ve başarılı veya başarısız eklemeyi izler
         addedResult = news_db.insert_news(currentNew_data)
         if (addedResult):
             success_count += 1
@@ -62,14 +66,19 @@ topWords = wordCounter.get_top_words(10)
 word_frequency_documents = [
     {"word": word, "count": count} for word, count in topWords
 ]
-news_db.insert_word_frequency(word_frequency_documents)
 
+# En çok geçen kelimelerin ve sıklıklarının veritabanına eklenmesi
+news_db.insert_word_frequency(word_frequency_documents)
+# Grafiğin kaydedileceği dosya yolu
 figPath = os.path.join(os.getcwd(), 'mostCommonWords.png')
+# En çok geçen kelimelerin çubuk grafiğinin kaydedilmesi
 wordCounter.savePlot(topWords, figPath)
 
+# istenilenleri elde edildiği an
 finish_time = time.time()
+# kod çalışırken geçen süre
 pass_time = finish_time - beginning_time
-
+# Toplam süre, başarılı/fail haber sayısı ve tarih bilgileri
 stats_data = {
     "elapsed_time": pass_time,
     "count": success_count + unsuccess_count,
@@ -77,4 +86,5 @@ stats_data = {
     "success_count": success_count,
     "fail_count": unsuccess_count,
 }
+# Ölçüm verilerinin veritabanına eklenmesi
 news_db.insert_stats(stats_data)
