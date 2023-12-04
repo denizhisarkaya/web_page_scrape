@@ -54,7 +54,7 @@ Kelime sayılarını saklamak için bir Counter nesnesi oluşturulur.
 “savePlot” fonksiyonu en çok geçen kelimelerin çubuk grafiğini oluşturur ve kaydeder.
 “topWords” parametresi, kelimelerin listesi ve sayılarıdır.
 “savePath” parametresi oluşturulan grafik dosyasının kaydedileceği konumu belirtir. 
-![Açıklama metni](C:\Users\deniz\OneDrive\Masaüstü\web_page_scrape\mostCommonWords.png)
+![En çok kullanılan 10 kelime](https://github.com/denizhisarkaya/web_page_scrape/blob/dev/mostCommonWords.png)
 
 
 ## getGroupUpdate.py adlı dosyada yapılanlar
